@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ent'Artes — Portal Administrativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1a7c72;
+    --teal-light: #2a9d8f;
+    --teal-pale: #e8f5f3;
+    --gold: #e8a020;
+    --dark: #1a1a1a;
+    --mid: #4a4a4a;
+    --soft: #9a9a9a;
+    --bg: #f9f8f6;
+    --white: #ffffff;
+    --border: #e8e4df;
+  }
+
+  html { font-size: 16px; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    height: 72px;
+    gap: 48px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+  }
+
+  .logo-text span {
+    color: var(--teal);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .nav-link {
+    position: relative;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--mid);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-link:hover {
+    color: var(--dark);
+    background: var(--bg);
+  }
+
+  .nav-link.active {
+    color: var(--teal);
+    font-weight: 500;
+    background: var(--teal-pale);
+  }
+
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--teal);
+    border-radius: 2px 2px 0 0;
+    transform: translateY(1px);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover { background: #155f57; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 6px 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .user-chip:hover { border-color: var(--teal-light); }
+
+  .user-name {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--mid);
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 0;
+  }
+
+  .page-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    font-size: 0.75rem;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: var(--soft);
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+
+  .page-tabs {
+    display: flex;
+    gap: 0;
+  }
+
+  .tab {
+    padding: 12px 20px;
+    font-size: 0.875rem;
+    color: var(--soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    font-weight: 400;
+  }
+
+  .tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+    font-weight: 500;
+  }
+
+  .tab:hover { color: var(--dark); }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    padding: 40px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ─── CALENDAR CARD ─── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: var(--mid);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* Calendar styles */
+  .calendar-body { padding: 24px 28px; }
+
+  .calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .calendar-month {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .cal-arrow {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--mid);
+    transition: border-color 0.2s;
+  }
+
+  .cal-arrow:hover { border-color: var(--teal); color: var(--teal); }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .cal-day-header {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 4px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--mid);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+  }
+
+  .cal-day:hover { background: var(--teal-pale); color: var(--teal); }
+
+  .cal-day.other-month { color: var(--border); }
+
+  .cal-day.today {
+    background: var(--teal);
+    color: white;
+    font-weight: 600;
+  }
+
+  .cal-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .cal-day.today.has-event::after {
+    background: rgba(255,255,255,0.7);
+  }
+
+  /* ─── EVENTS LIST ─── */
+  .events-section { padding: 20px 28px; border-top: 1px solid var(--border); }
+
+  .events-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .event-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .event-item:last-child { border-bottom: none; }
+
+  .event-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .event-info { flex: 1; }
+
+  .event-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 2px;
+  }
+
+  .event-meta {
+    font-size: 0.75rem;
+    color: var(--soft);
+  }
+
+  .event-time {
+    font-size: 0.75rem;
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ─── SIDEBAR CARDS ─── */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .stat-items { display: flex; flex-direction: column; gap: 14px; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stat-name {
+    font-size: 0.875rem;
+    color: var(--mid);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--teal);
+  }
+
+  .upcoming-card {
+    background: linear-gradient(135deg, var(--teal) 0%, #155f57 100%);
+    border-radius: 16px;
+    padding: 24px 28px;
+    color: white;
+  }
+
+  .upcoming-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  .upcoming-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .upcoming-meta {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-bottom: 20px;
+  }
+
+  .upcoming-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 0.8rem;
+  }
+
+  .upcoming-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .upcoming-text { opacity: 0.85; }
+
+  .upcoming-time { opacity: 0.6; margin-left: auto; font-variant-numeric: tabular-nums; }
+
+  /* ─── QUICK ACTIONS ─── */
+  .quick-actions {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+  }
+
+  .qa-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .qa-btn {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .qa-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+
+  .qa-btn-icon {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .qa-btn-label {
+    font-size: 0.8rem;
+    color: var(--mid);
+    display: block;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  nav { animation: fadeUp 0.4s ease both; }
+  .page-header { animation: fadeUp 0.45s 0.05s ease both; }
+  .content-grid > *:nth-child(1) { animation: fadeUp 0.5s 0.1s ease both; }
+  .content-grid > *:nth-child(2) { animation: fadeUp 0.5s 0.18s ease both; }
+
+  /* Tab switcher logic */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+        <path d="M12 2C12 2 7 8 7 13a5 5 0 0 0 10 0c0-5-5-11-5-11z"/>
+        <path d="M7 13c-3 0-5 2-5 4"/>
+        <path d="M17 13c3 0 5 2 5 4"/>
+      </svg>
+    </div>
+    <span class="logo-text">ent'<span>artes</span></span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#" class="nav-link active">Calendário</a>
+    <a href="#" class="nav-link">Requisições</a>
+    <a href="#" class="nav-link">Professores</a>
+    <a href="#" class="nav-link">Inventário</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="btn-primary" onclick="this.textContent = this.textContent === '+ Nova Aula' ? '✓ Criada!' : '+ Nova Aula'; setTimeout(()=>this.textContent='+ Nova Aula',1500)">+ Nova Aula</button>
+    <div class="user-chip">
+      <span class="user-name">Utilizador</span>
+      <div class="avatar">U</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">Portal Administrativo / Calendário</div>
+    <h1 class="page-title">Calendário</h1>
+    <p class="page-subtitle">Março 2026 · 12 aulas agendadas este mês</p>
+    <div class="page-tabs">
+      <div class="tab active" onclick="switchTab(this, 'mes')">Mês</div>
+      <div class="tab" onclick="switchTab(this, 'semana')">Semana</div>
+      <div class="tab" onclick="switchTab(this, 'dia')">Dia</div>
+      <div class="tab" onclick="switchTab(this, 'lista')">Lista</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<main>
+  <div class="content-grid">
+
+    <!-- Calendar -->
+    <div class="card" style="animation: fadeUp 0.5s 0.1s ease both; opacity:0; animation-fill-mode:forwards;">
+      <div class="card-header">
+        <span class="card-title">Março 2026</span>
+        <div class="card-actions">
+          <button class="btn-ghost">Hoje</button>
+          <button class="btn-ghost">Exportar</button>
+        </div>
+      </div>
+
+      <div class="calendar-body">
+        <div class="calendar-nav">
+          <button class="cal-arrow">‹</button>
+          <span class="calendar-month">Março 2026</span>
+          <button class="cal-arrow">›</button>
+        </div>
+
+        <div class="calendar-grid">
+          <div class="cal-day-header">Seg</div>
+          <div class="cal-day-header">Ter</div>
+          <div class="cal-day-header">Qua</div>
+          <div class="cal-day-header">Qui</div>
+          <div class="cal-day-header">Sex</div>
+          <div class="cal-day-header">Sáb</div>
+          <div class="cal-day-header">Dom</div>
+
+          <!-- Feb tail -->
+          <div class="cal-day other-month">24</div>
+          <div class="cal-day other-month">25</div>
+          <div class="cal-day other-month">26</div>
+          <div class="cal-day other-month">27</div>
+          <div class="cal-day other-month">28</div>
+
+          <!-- March -->
+          <div class="cal-day has-event">1</div>
+          <div class="cal-day">2</div>
+          <div class="cal-day">3</div>
+          <div class="cal-day has-event">4</div>
+          <div class="cal-day">5</div>
+          <div class="cal-day">6</div>
+          <div class="cal-day">7</div>
+          <div class="cal-day">8</div>
+          <div class="cal-day">9</div>
+          <div class="cal-day has-event">10</div>
+          <div class="cal-day">11</div>
+          <div class="cal-day has-event">12</div>
+          <div class="cal-day">13</div>
+          <div class="cal-day">14</div>
+          <div class="cal-day">15</div>
+          <div class="cal-day">16</div>
+          <div class="cal-day">17</div>
+          <div class="cal-day has-event">18</div>
+          <div class="cal-day">19</div>
+          <div class="cal-day">20</div>
+          <div class="cal-day">21</div>
+          <div class="cal-day">22</div>
+          <div class="cal-day today has-event">23</div>
+          <div class="cal-day">24</div>
+          <div class="cal-day">25</div>
+          <div class="cal-day">26</div>
+          <div class="cal-day has-event">27</div>
+          <div class="cal-day">28</div>
+          <div class="cal-day">29</div>
+          <div class="cal-day">30</div>
+          <div class="cal-day">31</div>
+          <div class="cal-day other-month">1</div>
+          <div class="cal-day other-month">2</div>
+          <div class="cal-day other-month">3</div>
+          <div class="cal-day other-month">4</div>
+          <div class="cal-day other-month">5</div>
+          <div class="cal-day other-month">6</div>
+        </div>
+      </div>
+
+      <div class="events-section">
+        <div class="events-label">Aulas de hoje — 1 de Março</div>
+        <div class="event-item">
+          <div class="event-dot" style="background: var(--teal);"></div>
+          <div class="event-info">
+            <div class="event-name">Ballet Clássico — Nível A</div>
+            <div class="event-meta">Prof. Ana Carvalho · Sala 1</div>
+          </div>
+          <div class="event-time">09:00 – 10:30</div>
+        </div>
+        <div class="event-item">
+          <div class="event-dot" style="background: var(--gold);"></div>
+          <div class="event-info">
+            <div class="event-name">Dança Contemporânea</div>
+            <div class="event-meta">Prof. João Maia · Sala 2</div>
+          </div>
+          <div class="event-time">14:00 – 15:30</div>
+        </div>
+        <div class="event-item">
+          <div class="event-dot" style="background: #e05050;"></div>
+          <div class="event-info">
+            <div class="event-name">Jazz Avançado</div>
+            <div class="event-meta">Prof. Marta Silva · Sala 1</div>
+          </div>
+          <div class="event-time">18:00 – 19:30</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" style="animation: fadeUp 0.5s 0.18s ease both; opacity:0; animation-fill-mode:forwards;">
+
+      <!-- Upcoming -->
+      <div class="upcoming-card">
+        <div class="upcoming-label">A seguir</div>
+        <div class="upcoming-title">Espetáculo de Primavera</div>
+        <div class="upcoming-meta">27 de Março · Teatro Municipal</div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot"></div>
+          <span class="upcoming-text">Ensaio geral</span>
+          <span class="upcoming-time">25 Mar</span>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot"></div>
+          <span class="upcoming-text">Espetáculo principal</span>
+          <span class="upcoming-time">27 Mar</span>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot"></div>
+          <span class="upcoming-text">Sessão de tarde</span>
+          <span class="upcoming-time">27 Mar</span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-card">
+        <div class="stat-label">Este mês</div>
+        <div class="stat-items">
+          <div>
+            <div class="stat-row">
+              <div class="stat-name">
+                <div class="stat-icon" style="background:#e8f5f3; color: var(--teal);">🗓</div>
+                Aulas agendadas
+              </div>
+              <div class="stat-value">12</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 75%; background: var(--teal);"></div></div>
+          </div>
+          <div>
+            <div class="stat-row">
+              <div class="stat-name">
+                <div class="stat-icon" style="background:#fff8e8; color: var(--gold);">👥</div>
+                Professores ativos
+              </div>
+              <div class="stat-value">8</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 60%; background: var(--gold);"></div></div>
+          </div>
+          <div>
+            <div class="stat-row">
+              <div class="stat-name">
+                <div class="stat-icon" style="background:#fde8e8; color: #e05050;">📋</div>
+                Requisições pendentes
+              </div>
+              <div class="stat-value">3</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 25%; background: #e05050;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="qa-title">Ações rápidas</div>
+        <div class="qa-grid">
+          <button class="qa-btn">
+            <span class="qa-btn-icon">📅</span>
+            <span class="qa-btn-label">Nova aula</span>
+          </button>
+          <button class="qa-btn">
+            <span class="qa-btn-icon">📋</span>
+            <span class="qa-btn-label">Requisição</span>
+          </button>
+          <button class="qa-btn">
+            <span class="qa-btn-icon">👤</span>
+            <span class="qa-btn-label">Adicionar professor</span>
+          </button>
+          <button class="qa-btn">
+            <span class="qa-btn-icon">📦</span>
+            <span class="qa-btn-label">Ver inventário</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+  function switchTab(el, name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

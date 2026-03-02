@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The North Code - Software Engineering from Braga</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red-primary: #E31E24;
+            --red-dark: #B01820;
+            --red-light: #FF3842;
+            --dark-bg: #0A0A0A;
+            --dark-secondary: #1A1A1A;
+            --dark-tertiary: #2A2A2A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #CCCCCC;
+            --text-tertiary: #999999;
+            --accent-gradient: linear-gradient(135deg, #E31E24 0%, #FF6B6B 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(227, 30, 36, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(227, 30, 36, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            opacity: 0.5;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(227, 30, 36, 0.2);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -1px;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1001;
+            position: relative;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            color: var(--red-primary);
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--red-primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--red-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--dark-tertiary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .lang-btn.active {
+            background: var(--red-primary);
+            border-color: var(--red-primary);
+            color: white;
+        }
+
+        .lang-btn:not(.active):hover {
+            border-color: var(--red-primary);
+            color: var(--red-primary);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            position: relative;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-primary);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            padding: 6rem 2rem 2rem;
+            transition: right 0.4s ease-in-out;
+            border-left: 1px solid var(--dark-tertiary);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .mobile-menu ul li a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: block;
+        }
+
+        .mobile-menu ul li a:hover {
+            color: var(--red-primary);
+        }
+
+        .mobile-lang {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--dark-tertiary);
+        }
+
+        .mobile-lang .lang-switcher {
+            display: flex !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(227, 30, 36, 0.1);
+            border: 1px solid rgba(227, 30, 36, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--red-light);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -3px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero h1 .highlight {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--red-primary);
+            color: white;
+            border-color: var(--red-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(227, 30, 36, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--dark-tertiary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--red-primary);
+            color: var(--red-primary);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 8rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--red-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+
+        .section-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--dark-secondary);
+            border: 1px solid var(--dark-tertiary);
+            border-radius: 16px;
+            padding: 3rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--red-primary);
+            box-shadow: 0 20px 60px rgba(227, 30, 36, 0.2);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(227, 30, 36, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--red-primary);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            padding: 8rem 2rem;
+            background: var(--dark-secondary);
+            position: relative;
+            z-index: 10;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .tech-item {
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-tertiary);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .tech-item:hover {
+            border-color: var(--red-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(227, 30, 36, 0.15);
+        }
+
+        .tech-item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-item-name {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* About Section */
+        .about {
+            padding: 8rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat {
+            background: var(--dark-secondary);
+            border: 1px solid var(--dark-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--red-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 8rem 2rem;
+            background: var(--dark-secondary);
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            border-top: 1px solid var(--dark-tertiary);
+            padding: 4rem 2rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--red-primary);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid var(--dark-tertiary);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .nav-links {
+                display: none;
+            }
+
+            .lang-switcher {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="TheNorthCodeLogo.jpeg" alt="The North Code Logo">
+                <span>THE NORTH CODE</span>
+            </a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#services" class="translate" data-pt="Serviços" data-en="Services">Serviços</a></li>
+                    <li><a href="#tech" class="translate" data-pt="Tecnologias" data-en="Technologies">Tecnologias</a></li>
+                    <li><a href="#about" class="translate" data-pt="Sobre" data-en="About">Sobre</a></li>
+                    <li><a href="#contact" class="translate" data-pt="Contacto" data-en="Contact">Contacto</a></li>
+                </ul>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="pt">PT</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#services" class="translate" data-pt="Serviços" data-en="Services">Serviços</a></li>
+            <li><a href="#tech" class="translate" data-pt="Tecnologias" data-en="Technologies">Tecnologias</a></li>
+            <li><a href="#about" class="translate" data-pt="Sobre" data-en="About">Sobre</a></li>
+            <li><a href="#contact" class="translate" data-pt="Contacto" data-en="Contact">Contacto</a></li>
+        </ul>
+        <div class="mobile-lang">
+            <div class="mobile-lang-title translate" data-pt="Idioma" data-en="Language">Idioma</div>
+            <div class="lang-switcher">
+                <button class="lang-btn mobile-lang-btn active" data-lang="pt">PT</button>
+                <button class="lang-btn mobile-lang-btn" data-lang="en">EN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-label translate" data-pt="🚀 Engenharia de Software • Braga, Portugal" data-en="🚀 Software Engineering • Braga, Portugal">🚀 Engenharia de Software • Braga, Portugal</div>
+            <h1>
+                <span class="translate" data-pt="Código do " data-en="Code from the ">Código do </span><span class="highlight translate" data-pt="Norte" data-en="North">Norte</span><br>
+                <span class="translate" data-pt="Soluções " data-en="Solutions ">Soluções </span><span class="highlight translate" data-pt="Globais" data-en="Worldwide">Globais</span>
+            </h1>
+            <p class="translate" data-pt="Somos engenheiros informáticos de Braga, a criar software web, aplicações móveis e soluções digitais de excelência para clientes em todo o mundo." data-en="We are software engineers from Braga, creating web software, mobile applications and excellent digital solutions for clients worldwide.">
+                Somos engenheiros informáticos de Braga, a criar software web, aplicações móveis 
+                e soluções digitais de excelência para clientes em todo o mundo.
+            </p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary translate" data-pt="Iniciar Projeto" data-en="Start Project">Iniciar Projeto</a>
+                <a href="#services" class="btn btn-secondary translate" data-pt="Conhecer Serviços" data-en="Learn More">Conhecer Serviços</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label translate" data-pt="// O que fazemos" data-en="// What we do">// O que fazemos</div>
+                <h2 class="section-title translate" data-pt="Serviços de Excelência" data-en="Excellence Services">Serviços de Excelência</h2>
+                <p class="section-description translate" data-pt="Desenvolvemos soluções tecnológicas completas, desde o conceito até à implementação." data-en="We develop complete technological solutions, from concept to implementation.">
+                    Desenvolvemos soluções tecnológicas completas, desde o conceito até à implementação.
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🌐</div>
+                    <h3 class="translate" data-pt="Desenvolvimento Web" data-en="Web Development">Desenvolvimento Web</h3>
+                    <p class="translate" data-pt="Websites modernos, aplicações web responsivas e plataformas escaláveis construídas com as mais recentes tecnologias." data-en="Modern websites, responsive web applications and scalable platforms built with the latest technologies.">
+                        Websites modernos, aplicações web responsivas e plataformas escaláveis 
+                        construídas com as mais recentes tecnologias.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3 class="translate" data-pt="Aplicações Mobile" data-en="Mobile Applications">Aplicações Mobile</h3>
+                    <p class="translate" data-pt="Apps nativas e cross-platform para iOS e Android, com interfaces intuitivas e performance otimizada." data-en="Native and cross-platform apps for iOS and Android, with intuitive interfaces and optimised performance.">
+                        Apps nativas e cross-platform para iOS e Android, com interfaces 
+                        intuitivas e performance otimizada.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">☁️</div>
+                    <h3 class="translate" data-pt="Cloud & DevOps" data-en="Cloud & DevOps">Cloud & DevOps</h3>
+                    <p class="translate" data-pt="Arquitetura cloud, deployment automatizado e infraestrutura escalável para garantir disponibilidade 24/7." data-en="Cloud architecture, automated deployment and scalable infrastructure to ensure 24/7 availability.">
+                        Arquitetura cloud, deployment automatizado e infraestrutura 
+                        escalável para garantir disponibilidade 24/7.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="translate" data-pt="UI/UX Design" data-en="UI/UX Design">UI/UX Design</h3>
+                    <p class="translate" data-pt="Design centrado no utilizador, interfaces modernas e experiências digitais que convertem e encantam." data-en="User-centred design, modern interfaces and digital experiences that convert and delight.">
+                        Design centrado no utilizador, interfaces modernas e experiências 
+                        digitais que convertem e encantam.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3 class="translate" data-pt="Consultoria Técnica" data-en="Technical Consulting">Consultoria Técnica</h3>
+                    <p class="translate" data-pt="Análise de sistemas, arquitetura de software e consultoria estratégica para otimizar os seus projetos tecnológicos." data-en="Systems analysis, software architecture and strategic consulting to optimise your technology projects.">
+                        Análise de sistemas, arquitetura de software e consultoria estratégica 
+                        para otimizar os seus projetos tecnológicos.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3 class="translate" data-pt="MVP & Startups" data-en="MVP & Startups">MVP & Startups</h3>
+                    <p class="translate" data-pt="Desenvolvimento rápido de MVPs, validação de ideias e apoio técnico para startups em fase inicial." data-en="Rapid MVP development, idea validation and technical support for early-stage startups.">
+                        Desenvolvimento rápido de MVPs, validação de ideias e apoio 
+                        técnico para startups em fase inicial.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech" class="tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label translate" data-pt="// Stack Tecnológico" data-en="// Tech Stack">// Stack Tecnológico</div>
+                <h2 class="section-title translate" data-pt="Tecnologias de Vanguarda" data-en="Cutting-Edge Technologies">Tecnologias de Vanguarda</h2>
+                <p class="section-description translate" data-pt="Trabalhamos com as melhores ferramentas e frameworks do mercado." data-en="We work with the best tools and frameworks on the market.">
+                    Trabalhamos com as melhores ferramentas e frameworks do mercado.
+                </p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-item-icon">⚛️</div>
+                    <div class="tech-item-name">React</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">💚</div>
+                    <div class="tech-item-name">Node.js</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🔷</div>
+                    <div class="tech-item-name">TypeScript</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🐍</div>
+                    <div class="tech-item-name">Python</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🟦</div>
+                    <div class="tech-item-name">Flutter</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">⚡</div>
+                    <div class="tech-item-name">Next.js</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🔺</div>
+                    <div class="tech-item-name">MongoDB</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🐘</div>
+                    <div class="tech-item-name">PostgreSQL</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">☁️</div>
+                    <div class="tech-item-name">AWS</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🔷</div>
+                    <div class="tech-item-name">Docker</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🎯</div>
+                    <div class="tech-item-name">GraphQL</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-item-icon">🔥</div>
+                    <div class="tech-item-name">Firebase</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="translate" data-pt="Do Norte de Portugal para o Mundo" data-en="From Northern Portugal to the World">Do Norte de Portugal para o Mundo</h2>
+                    <p class="translate" data-pt="A The North Code nasceu em Braga, o coração do Minho, onde a tradição encontra a inovação. Somos uma equipa de engenheiros informáticos apaixonados por tecnologia e comprometidos com a excelência." data-en="The North Code was born in Braga, the heart of Minho, where tradition meets innovation. We are a team of software engineers passionate about technology and committed to excellence.">
+                        A The North Code nasceu em Braga, o coração do Minho, onde a tradição 
+                        encontra a inovação. Somos uma equipa de engenheiros informáticos apaixonados 
+                        por tecnologia e comprometidos com a excelência.
+                    </p>
+                    <p class="translate" data-pt="O nosso nome reflete as nossas raízes nortenhas e o nosso compromisso em criar código de qualidade superior. Trabalhamos com clientes locais e internacionais, levando a expertise portuguesa além-fronteiras." data-en="Our name reflects our northern roots and our commitment to creating superior quality code. We work with local and international clients, taking Portuguese expertise across borders.">
+                        O nosso nome reflete as nossas raízes nortenhas e o nosso compromisso em 
+                        criar código de qualidade superior. Trabalhamos com clientes locais e 
+                        internacionais, levando a expertise portuguesa além-fronteiras.
+                    </p>
+                    <p class="translate" data-pt="Com uma abordagem centrada no cliente e foco em resultados, transformamos ideias em produtos digitais que fazem a diferença." data-en="With a client-centred approach and focus on results, we transform ideas into digital products that make a difference.">
+                        Com uma abordagem centrada no cliente e foco em resultados, transformamos 
+                        ideias em produtos digitais que fazem a diferença.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label translate" data-pt="Projetos Entregues" data-en="Delivered Projects">Projetos Entregues</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label translate" data-pt="Clientes Satisfeitos" data-en="Satisfied Clients">Clientes Satisfeitos</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label translate" data-pt="Dedicação" data-en="Dedication">Dedicação</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label translate" data-pt="Suporte Disponível" data-en="Available Support">Suporte Disponível</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="translate" data-pt="Pronto para Começar?" data-en="Ready to Start?">Pronto para Começar?</h2>
+                <p class="translate" data-pt="Vamos transformar a sua ideia em realidade. Contacte-nos hoje e descubra como podemos ajudar o seu negócio a crescer." data-en="Let's transform your idea into reality. Contact us today and discover how we can help your business grow.">
+                    Vamos transformar a sua ideia em realidade. Contacte-nos hoje e 
+                    descubra como podemos ajudar o seu negócio a crescer.
+                </p>
+                <div class="hero-buttons">
+                    <a href="mailto:hello@thenorthcode.pt" class="btn btn-primary translate" data-pt="Contactar Agora" data-en="Contact Now">Contactar Agora</a>
+                    <a href="tel:+351000000000" class="btn btn-secondary">+351 XXX XXX XXX</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>THE NORTH CODE</h3>
+                <p class="translate" data-pt="Engenharia de software de excelência, criada no Norte de Portugal para o mundo." data-en="Excellence software engineering, created in Northern Portugal for the world.">
+                    Engenharia de software de excelência, criada no Norte de Portugal 
+                    para o mundo.
+                </p>
+            </div>
+            <div class="footer-section">
+                <h4 class="translate" data-pt="Serviços" data-en="Services">Serviços</h4>
+                <ul>
+                    <li><a href="#services" class="translate" data-pt="Desenvolvimento Web" data-en="Web Development">Desenvolvimento Web</a></li>
+                    <li><a href="#services" class="translate" data-pt="Apps Mobile" data-en="Mobile Apps">Apps Mobile</a></li>
+                    <li><a href="#services">Cloud & DevOps</a></li>
+                    <li><a href="#services">UI/UX Design</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="translate" data-pt="Empresa" data-en="Company">Empresa</h4>
+                <ul>
+                    <li><a href="#about" class="translate" data-pt="Sobre Nós" data-en="About Us">Sobre Nós</a></li>
+                    <li><a href="#tech" class="translate" data-pt="Tecnologias" data-en="Technologies">Tecnologias</a></li>
+                    <li><a href="#contact" class="translate" data-pt="Contacto" data-en="Contact">Contacto</a></li>
+                    <li><a href="#" class="translate" data-pt="Carreiras" data-en="Careers">Carreiras</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="translate" data-pt="Contacto" data-en="Contact">Contacto</h4>
+                <ul>
+                    <li><a href="mailto:hello@thenorthcode.pt">hello@thenorthcode.pt</a></li>
+                    <li><a href="tel:+351000000000">+351 XXX XXX XXX</a></li>
+                    <li>Braga, Portugal</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="translate" data-pt="© 2026 The North Code. Todos os direitos reservados. Feito com ❤️ em Braga." data-en="© 2026 The North Code. All rights reserved. Made with ❤️ in Braga.">© 2026 The North Code. Todos os direitos reservados. Feito com ❤️ em Braga.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Language switcher
+        function switchLanguage(lang) {
+            console.log('Switching to:', lang);
+            document.querySelectorAll('.translate').forEach(el => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) {
+                    el.textContent = text;
+                }
+            });
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Lang button clicked:', this.getAttribute('data-lang'));
+                switchLanguage(this.getAttribute('data-lang'));
+            });
+        });
+
+        // Hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        console.log('Hamburger:', hamburger);
+        console.log('Mobile menu:', mobileMenu);
+
+        if (hamburger && mobileMenu) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Hamburger clicked!');
+                hamburger.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+                console.log('Menu active:', mobileMenu.classList.contains('active'));
+            });
+
+            document.querySelectorAll('.mobile-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (mobileMenu.classList.contains('active') && 
+                    !mobileMenu.contains(e.target) && 
+                    !hamburger.contains(e.target)) {
+                    hamburger.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for scroll animations
+        document.querySelectorAll('.service-card, .tech-item, .stat').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // Add subtle parallax effect to hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-content');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.7;
+            }
+        });
+    </script>
+</body>
+</html>
